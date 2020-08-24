@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="./css/styles.css" />
+    <title>We roll!</title>
+  </head>
+  <body>
+    <div class="stage">
+      <div class="game-top">
+        <div class="score-table">
+          <table>
+            <tr id="head">
+              <th id="round">Round 1/12</th>
+            </tr>
+            <tr id="aces">
+              <td>Aces</td>
+            </tr>
+            <tr id="twos">
+              <td>Twos</td>
+            </tr>
+            <tr id="threes">
+              <td>Threes</td>
+            </tr>
+            <tr id="fours">
+              <td>Fours</td>
+            </tr>
+            <tr id="fives">
+              <td>Fives</td>
+            </tr>
+            <tr id="sixes">
+              <td>Sixes</td>
+            </tr>
+            <tr id="lower_section">
+              <th>Lower Section</th>
+            </tr>
+            <tr id="three_of_a_kind">
+              <td>Three Of A Kind</td>
+            </tr>
+            <tr id="four_of_a_kind">
+              <td>Four Of A Kind</td>
+            </tr>
+            <tr id="full_house">
+              <td>Full House</td>
+            </tr>
+            <tr id="small_straight">
+              <td>Small Straight</td>
+            </tr>
+            <tr id="large_straight">
+              <td>Large Straight</td>
+            </tr>
+            <tr id="yahtzee">
+              <td>Yahtzee</td>
+            </tr>
+            <tr id="chance">
+              <td>Chance</td>
+            </tr>
+            <tr class="total">
+              <td></td>
+            </tr>
+          </table>
+        </div>
+        <div class="dice-space blue">
+          <div id="dice-roll"></div>
+          <div class="roll">
+            <button class="waves-effect waves-light btn-large light-blue disabled" id="btnRoll">
+              Roll Dice (3)
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="dice-store red">
+        <div id="selected-dice"></div>
+        <div class="end-turn">
+          <button class="waves-effect waves-light btn red accent-3 disabled" id="btnEndTurn">
+            End Turn
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-container z-depth-1">
+      <div class="chat-main">
+        <div class="chat-messages"></div>
+      </div>
+    </div>
+
+    <div class="chat-container z-depth-1">
+      <div class="chat-form-container">
+        <form id="chat-form">
+          <input id="msg" type="text" placeholder="Enter Message" required autocomplete="off"/>
+          <button class="btn">Send</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="chat-container z-depth-1">
+      <div class="chat-main">
+        <div class="chat-info">
+          <div class="room-info">
+            <p>Room ID: </p>
+            <p id="room-name"></p>
+          </div>
+          <div class="user-info">
+            <p>Users: </p>
+            <div id="users"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-container z-depth-1">
+      <button class="btn" id="btnStart">Start</button>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js" integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./js/init.js"></script>
+    <script src="./js/game.js"></script>
+    <script src="./js/chat.js"></script>
+  </body>
+</html>

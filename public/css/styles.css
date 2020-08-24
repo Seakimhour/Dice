@@ -1,0 +1,166 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.flex {
+  display: flex !important;
+}
+
+.stage {
+  display: none;
+  flex-direction: column;
+  width: 100%;
+}
+
+.game-top {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-height: calc(100vh - 100px);
+}
+
+.dice-space {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+#dice-roll {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+a img {
+  margin: 10px;
+}
+
+.roll {
+  flex-shrink: 1;
+  display: flex;
+  justify-content: center;
+  margin: 30px;
+}
+
+.score-table {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+th {
+  text-align: center;
+  width: 100px;
+}
+
+td {
+  width: 100px;
+}
+
+.point {
+  cursor: pointer;
+  text-align: center;
+  padding: 0;
+  font-size: 2rem;
+}
+
+.total {
+  padding: 0;
+  font-size: 2rem;
+}
+
+.point:hover {
+  background-color: #66bb6a;
+}
+
+.completed {
+  background-color: #4caf50;
+  color: white;
+}
+
+.dice-store {
+  display: flex;
+  height: 100px;
+}
+
+#selected-dice {
+  flex: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.end-turn {
+  padding: 0 30px;
+  display: flex;
+  align-items: center;
+}
+
+.center {
+  margin: 20px auto;
+}
+
+.full-height {
+  min-height: 100vh !important;
+}
+
+.main {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.form-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.chat-container {
+  max-width: 980px;
+  display: flex;
+  flex-direction: column;
+  margin: 30px auto;
+  padding: 10px;
+  border-radius: 10px;
+
+}
+
+.chat-main {
+  display: flex;
+  flex-direction: row;
+}
+
+.chat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.room-info, .user-info {
+  display: flex;
+  flex-direction: row;
+}
+
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+}
+
+#chat-form {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.message {
+  display: flex;
+  flex-direction: row;
+}
+
+#room-name, #users {
+  padding-left: 10px;
+}
