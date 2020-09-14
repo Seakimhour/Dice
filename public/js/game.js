@@ -1,55 +1,29 @@
-const btnRoll = document.getElementById('btnRoll');
-const btnEndTurn = document.getElementById('btnEndTurn');
-const disabled = document.getElementsByClassName('disabled');
-
-const round = document.getElementById('round');
-const selectedDice = document.getElementById("selected-dice");
-const diceRoll = document.getElementById("dice-roll");
-
 socket.on('rollTheDice', data => {
-  if (data.rollAvailable >= 0) {
+  if (data.rollAvailable < 0) return;
 
-    btnRoll.innerHTML = `ROLL DICE (${data.rollAvailable})`;
-    diceRoll.innerHTML = "";
+  prepareForRoll(data.storeDice, data.newRoll, data.player.id);
 
-    let output = "", json = "";
+  runThrow(data.newRoll, data.player.id, data.rollAvailable);
   
-    for (i = 1; i <= data.currentDice.length; i++) {
-      output = `<img src="assets/dice-${data.currentDice[i-1]}.png" alt="">`;
-      json = JSON.stringify({dice_index:i, player_id:data.player.id});
-      diceRoll.innerHTML += `<a href="#" onClick=selectDice('${json}') class="dice dice-${i}" id="${data.currentDice[i-1]}">${output}</a>`;
-    }
-  
-    clearCell();
-    pointCalculation(data.allDice, data.player);
-    // socket.emit('playerPoint');
+  clearCell();
+});
+
+socket.on("selectPosition", data => {
+  if (data.dice_index != undefined) {
+    let dice_value = box.remove_dice_and_get_value(data.dice_index);
+    socket.emit('selectDice', {dice_value:dice_value, player_id:data.player_id});
   }
 });
 
-function selectDice(data) {
-  data = JSON.parse(data);
-  socket.emit('selectDice', data);
-};
-
-socket.on('selectDice', data => {
-  let element = document.getElementsByClassName("dice-" + data.dice_index)[0];
-  let dice = parseInt(element.id);
-  element.remove();
-  socket.emit('showStoreDice', {dice:dice, player_id:data.player_id});
-});
-
 socket.on('showStoreDice', storeDice => {
-  selectedDice.innerHTML = "";
-  storeDice.forEach(dice => {
-    let output = `<img src="assets/dice-${dice}.png" alt="">`;
-    selectedDice.innerHTML += `<a class="dice">${output}</a>`;
-  });
+  store.store_dice(storeDice);
 });
 
 socket.on('endTurn', (nextPlayer) => {
-  btnRoll.innerHTML = `ROLL DICE (3)`;
-  diceRoll.innerHTML = "";
-  selectedDice.innerHTML = "";
+  btnRoll.innerHTML = `ROLL(3)`;
+  box.clear();
+  store.store_dice([]);
+  resetCurrentDice();
   clearCell();
   turn(nextPlayer);
   socket.emit('playerPoint');
@@ -92,70 +66,98 @@ socket.on('playerPoint', (players) => {
         total += point[property];
       }
     }
+    total += player.specialDice - player.minus;
     document.getElementsByClassName(player.id + " total")[0].textContent = total;
   });
 });
 
 socket.on('StartGame', data => {
-  
+
   // generate point cell base on number player
   clickableCell(data.players);
   
   turn(data.player);
 
-  //Show game stage
-  document.getElementsByClassName('stage')[0].className += " flex";
+  //Hide Game Start Button
+  document.getElementById("btnStart").className += " scale-out";
 });
 
 function clickableCell(players) {
-
   let player = getPlayer();
 
   for (let p = 0; p < players.length; p++) {
     for (let i = 0; i < 16; i++) {
-      let tr = document.getElementsByTagName("tr")[i];
+      let tr = document.getElementsByClassName("tr")[i];
       if (i == 0) {
-        let th = document.createElement("th");
-        th.id = `player-${players[p].name}`;
-        th.innerHTML = players[p].name;
-        tr.appendChild(th);
+        let div = document.createElement("div");
+        div.id = `player-${players[p].name}`;
+        div.className = 'th';
+        div.innerHTML = players[p].name;
+        tr.appendChild(div);
       } else if (i == 7) {
-        let th = document.createElement("th");
-        tr.appendChild(th);
+        let div = document.createElement("div");
+        div.className = 'th';
+        tr.appendChild(div);
       } else if (i == 15) {
-        let th = document.createElement("th");
-        th.className = `${players[p].id} total`;
-        th.innerHTML = 0;
-        tr.appendChild(th);
+        let div = document.createElement("div");
+        div.className = `th ${players[p].id} total`;
+        div.innerHTML = 0;
+        tr.appendChild(div);
       } else {
-        let td = document.createElement("td");
-        td.id = players[p].id;
-        td.className = "point";
+        let div = document.createElement("div");
+        div.id = players[p].id;
+        div.className = "td point";
 
         if (players[p].id == player.id) {
-          td.addEventListener("click", () => savePoint(td, player), false);
+          div.addEventListener("click", () => savePoint(div, player), false);
         }
 
-        tr.appendChild(td);
+        tr.appendChild(div);
       }
     }
+
+    document.getElementById('chose-attack-content').innerHTML += 
+    `
+      <div class="col s12 m6">
+        <a href="#!" onclick="powerPointHandler('${players[p].id}')">
+          <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+              <span class="card-title">${players[p].name}</span>
+              <p class="chose-attack-damage"></p>
+            </div>
+          </div>
+        </a>
+      </div>
+    `;
   }
 }
 
-function turn(nextPLayer) {
+function turn(nextPlayer) {
+  player_turn_id = nextPlayer.id;
 
   let player = getPlayer();
-  // let playerName = docuemnt.getElementById('player-' + player.name);
-  
-  if (!btnRoll.classList.contains('disabled') && !btnEndTurn.classList.contains('disabled')) {
-    btnRoll.className += ' disabled';
-    btnEndTurn.className += ' disabled';
-  }
 
-  if (player.id == nextPLayer.id) {
+  my_turn = false;
+  if (!btnRoll.classList.contains('disabled')) btnRoll.className += ' disabled';
+  if (!btnEndTurn.classList.contains('disabled')) btnEndTurn.className += ' disabled';
+  
+  if (!setTwoDice.classList.contains('disabled')) setTwoDice.className += ' disabled';
+  if (!addOneDice.classList.contains('disabled')) addOneDice.className += ' disabled';
+  if (!specialDice.classList.contains('disabled')) specialDice.className += ' disabled';
+  if (!choseAttack.classList.contains('disabled')) choseAttack.className += ' disabled';
+  if (!randomAttack.classList.contains('disabled')) randomAttack.className += ' disabled';
+
+  if (player.id == nextPlayer.id) {
+    my_turn = true;
     btnRoll.classList.remove('disabled');
     btnEndTurn.classList.remove('disabled');
   }
+
+  if (nextPlayer.power.setTwoDice > 0) setTwoDice.classList.remove('disabled');
+  if (nextPlayer.power.addOneDice > 0) addOneDice.classList.remove('disabled');
+  if (nextPlayer.power.specialDice > 0) specialDice.classList.remove('disabled');
+  if (nextPlayer.power.choseAttack > 0) choseAttack.classList.remove('disabled');
+  if (nextPlayer.power.randomAttack > 0) randomAttack.classList.remove('disabled');
 }
 
 socket.on('SetRound', currentRound => {
@@ -163,7 +165,22 @@ socket.on('SetRound', currentRound => {
 });
 
 // Point Calculation
-function pointCalculation(currentDice, player) {
+function pointCalculation(result, player_turn_id) {
+  let roll_point = {
+    aces: 0,
+    twos: 0,
+    threes: 0,
+    fours: 0,
+    fives: 0,
+    sixes: 0,
+    three_of_a_kind: 0,
+    four_of_a_kind: 0,
+    full_house: 0,
+    small_straight: 0,
+    large_straight: 0,
+    yahtzee: 0,
+    chance: 0,
+  };
   let pointArray = [0, 0, 0, 0, 0, 0];
   let pointObj = {
     aces: 0,
@@ -174,7 +191,7 @@ function pointCalculation(currentDice, player) {
     sixes: 0,
   };
 
-  currentDice.forEach((e) => {
+  result.forEach((e) => {
     if (e == 1) {
       pointObj.aces++;
       pointArray[0]++;
@@ -198,33 +215,29 @@ function pointCalculation(currentDice, player) {
 
   let numbers = 1;
   for (const property in pointObj) {
-    let type = document.getElementById(property).children[player.id];
-    if (pointObj[property] > 0 && !type.classList.contains("completed")) type.innerHTML = numbers * pointObj[property];
+    roll_point[property] = numbers * pointObj[property];
     numbers++;
   }
 
   let zeroCount = pointArray.filter((e) => e == 0).length;
   let maxN = Math.max(...pointArray);
 
-  let three_of_a_kind = document.getElementById("three_of_a_kind").children[player.id];
-  let four_of_a_kind = document.getElementById("four_of_a_kind").children[player.id];
-  let full_house = document.getElementById("full_house").children[player.id];
-  let small_straight = document.getElementById("small_straight").children[player.id];
-  let large_straight = document.getElementById("large_straight").children[player.id];
-  let yahtzee = document.getElementById("yahtzee").children[player.id];
-  let chance = document.getElementById("chance").children[player.id];
-
   if (zeroCount == 1 && maxN == 1) {
-    if (connect(pointArray) > 3 && !small_straight.classList.contains("completed")) small_straight.innerHTML = 30;
-    if (connect(pointArray) > 4 && !large_straight.classList.contains("completed")) large_straight.innerHTML = 40;
+    if (connect(pointArray) > 3) roll_point.small_straight.innerHTML = 30;
+    if (connect(pointArray) > 4) roll_point.large_straight.innerHTML = 40;
   }
-  if (zeroCount == 2 && maxN == 2 && connect(pointArray) > 3 && !small_straight.classList.contains("completed")) small_straight.innerHTML = 30;
-  if (zeroCount == 3 && maxN == 3 && !three_of_a_kind.classList.contains("completed")) three_of_a_kind.innerHTML = sumAll(currentDice);
-  if (zeroCount == 4 && maxN == 3 && !full_house.classList.contains("completed")) full_house.innerHTML = 25;
-  if (zeroCount == 4 && maxN == 4 && !four_of_a_kind.classList.contains("completed")) four_of_a_kind.innerHTML = sumAll(currentDice);
-  if (zeroCount == 5 && maxN == 5 && !yahtzee.classList.contains("completed")) yahtzee.innerHTML = 50;
-  if (!chance.classList.contains("completed")) chance.innerHTML = sumAll(currentDice);
-}
+  if (zeroCount == 2 && maxN == 2 && connect(pointArray) > 3) roll_point.small_straight = 30;
+  if (zeroCount == 3 && maxN == 3) roll_point.three_of_a_kind = sumAll(result);
+  if (zeroCount == 4 && maxN == 3) roll_point.full_house = 25;
+  if (zeroCount == 4 && maxN == 4) roll_point.four_of_a_kind = sumAll(result);
+  if (zeroCount == 5 && maxN == 5) roll_point.yahtzee = 50;
+  roll_point.chance = sumAll(result);
+  
+  for (const property in roll_point) {
+    let cell = document.getElementById(property).children[player_turn_id];
+    if (!cell.classList.contains("completed") && roll_point[property] > 0) cell.innerHTML = roll_point[property];
+  }
+} 
 
 function connect(pointArray) {
   let count = 0;
@@ -242,10 +255,29 @@ function connect(pointArray) {
   return max;
 }
 
-function sumAll(currentDice) {
+function sumAll(newRoll) {
   let sum = 0;
-  currentDice.forEach((dice) => {
+  newRoll.forEach((dice) => {
     sum += parseInt(dice);
   });
   return sum;
 }
+
+socket.on('powerHandler', (data) => {
+  let player = getPlayer();
+  setTimeout(() => {
+    if (player.id == data.player.id) {
+      if (data.type == 'specialDice') {
+        $('#modal-special-dice').modal('open');
+      } else if (data.type == 'choseAttack') {
+        $('#modal-chose-attack').modal('open');
+      } else if (data.type == 'randomAttack') {
+        console.log('here');
+        powerPointHandler(data.type);
+      }
+    }
+    turn(data.player);
+    clearCell();
+    box.clear();
+  }, 3000);
+});

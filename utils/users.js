@@ -20,6 +20,15 @@ function userJoin(id, username, room) {
       large_straight: 0,
       yahtzee: 0,
       chance: 0,
+    },
+    specialDice: 0,
+    minus: 0,
+    power: {
+      setTwoDice:1,
+      addOneDice:1,
+      specialDice:1,
+      choseAttack:1,
+      randomAttack:1,
     }
   };
 

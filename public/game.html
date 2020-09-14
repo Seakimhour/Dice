@@ -2,126 +2,193 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"/>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="./css/styles.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <link rel="stylesheet" href="./css/styles.css"/>
+    <link rel="stylesheet" href="./css/main.css"/>
+    <link rel="stylesheet" href="./css/dice.css"/>
     <title>We roll!</title>
   </head>
   <body>
-    <div class="stage">
-      <div class="game-top">
+
+    <!-- Modal Special Dice -->
+    <div id="modal-special-dice" class="modal">
+      <div class="modal-content">
+        <h4><i class="material-icons">brightness_auto</i> Special Dice</h4>
+        <p>This amount of point will be added to your total.</p>
+      </div>
+      <div class="modal-footer">
+        <a href="#!" onclick="powerPointHandler('specialDice')" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+      </div>
+    </div>
+
+    <!-- Modal Chose Attack -->
+    <div id="modal-chose-attack" class="modal">
+      <div class="modal-content">
+        <h4><i class="small material-icons">filter_center_focus</i> Chose Attack</h4>
+        <div class="row" id="chose-attack-content">
+        </div>
+      </div>
+    </div>
+
+    <div class="stage flex">
+      <div class="game">
         <div class="score-table">
-          <table>
-            <tr id="head">
-              <th id="round">Round 1/12</th>
-            </tr>
-            <tr id="aces">
-              <td>Aces</td>
-            </tr>
-            <tr id="twos">
-              <td>Twos</td>
-            </tr>
-            <tr id="threes">
-              <td>Threes</td>
-            </tr>
-            <tr id="fours">
-              <td>Fours</td>
-            </tr>
-            <tr id="fives">
-              <td>Fives</td>
-            </tr>
-            <tr id="sixes">
-              <td>Sixes</td>
-            </tr>
-            <tr id="lower_section">
-              <th>Lower Section</th>
-            </tr>
-            <tr id="three_of_a_kind">
-              <td>Three Of A Kind</td>
-            </tr>
-            <tr id="four_of_a_kind">
-              <td>Four Of A Kind</td>
-            </tr>
-            <tr id="full_house">
-              <td>Full House</td>
-            </tr>
-            <tr id="small_straight">
-              <td>Small Straight</td>
-            </tr>
-            <tr id="large_straight">
-              <td>Large Straight</td>
-            </tr>
-            <tr id="yahtzee">
-              <td>Yahtzee</td>
-            </tr>
-            <tr id="chance">
-              <td>Chance</td>
-            </tr>
-            <tr class="total">
-              <td></td>
-            </tr>
-          </table>
+          <div class="table">
+            <div class="tr" id="head">
+              <div class="th" id="round">Round 1/12</div>
+            </div>
+            <div class="tr" id="aces">
+              <div class="td tooltip">Aces <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2680&#x2680&#x2680&#x2680&#x2680</span></div>
+            </div>
+            <div class="tr" id="twos">
+              <div class="td tooltip">Twos <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2681&#x2681&#x2681&#x2681&#x2681</span></div>
+            </div>
+            <div class="tr" id="threes">
+              <div class="td tooltip">Threes <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2682&#x2682&#x2682&#x2682&#x2682</span></div>
+            </div>
+            <div class="tr" id="fours">
+              <div class="td tooltip">Fours <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2683&#x2683&#x2683&#x2683&#x2683</span></div>
+            </div>
+            <div class="tr" id="fives">
+              <div class="td tooltip">Fives <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2684&#x2684&#x2684&#x2684&#x2684</span></div>
+            </div>
+            <div class="tr" id="sixes">
+              <div class="td tooltip">Sixes <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2685&#x2685&#x2685&#x2685&#x2685</span></div>
+            </div>
+            <div class="tr" id="lower_section">
+              <div class="th">Lower Section</div>
+            </div>
+            <div class="tr" id="three_of_a_kind">
+              <div class="td tooltip">Three Of A Kind <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2685&#x2685&#x2685</span></div>
+            </div>
+            <div class="tr" id="four_of_a_kind">
+              <div class="td tooltip">Four Of A Kind <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2685&#x2685&#x2685&#x2685</span></div>
+            </div>
+            <div class="tr" id="full_house">
+              <div class="td tooltip">Full House <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2685&#x2685&#x2685&#x2684&#x2684</span></div>
+            </div>
+            <div class="tr" id="small_straight">
+              <div class="td tooltip">Small Straight <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2682&#x2683&#x2684&#x2685&#x2680</span></div>
+            </div>
+            <div class="tr" id="large_straight">
+              <div class="td tooltip">Large Straight <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2681&#x2682&#x2683&#x2684&#x2685</span></div>
+            </div>
+            <div class="tr" id="yahtzee">
+              <div class="td tooltip">Yahtzee <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2680&#x2680&#x2680&#x2680&#x2680</span></div>
+            </div>
+            <div class="tr" id="chance">
+              <div class="td tooltip">Chance <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2683&#x2685&#x2685&#x2680&#x2681</span></div>
+            </div>
+            <div class="tr" class="total">
+              <div class="td"></div>
+            </div>
+          </div>
         </div>
-        <div class="dice-space blue">
-          <div id="dice-roll"></div>
-          <div class="roll">
-            <button class="waves-effect waves-light btn-large light-blue disabled" id="btnRoll">
-              Roll Dice (3)
-            </button>
+        <div class="dice-space">
+
+          <div class="dice-store z-depth-1">
+            <div id="selected-dice"></div>
+            <div class="end-turn">
+              <button class="waves-effect waves-light btn red accent-3 disabled" id="btnEndTurn">
+                End Turn
+              </button>
+            </div>
+          </div>
+
+          <div id="dice-roll">
+            <div id="canvas">
+              <div class="z-depth-1 scale-transition" id="btnStart">
+                <p>Game Start</p>
+              </div>
+            </div>
+            <div id="dice-tool">
+              <div class="tool">
+                <div class="roll-button">
+                  <button class="waves-effect waves-light btn blue accent-3 disabled" id="btnRoll">ROLL(3)</button>
+                </div>
+                <div class="power">
+                  <div class="power-icon">
+                    <div class="fixed-action-btn">
+                      <a class="btn-floating btn-large waves-effect waves-light cyan disabled" id="power-setTwoDice">
+                        <i class="material-icons">filter_none</i>
+                      </a>
+                      <ul>
+                        <li><a class="btn-floating cyan waves-effect waves-light" id="power-setTwoDice-1"><i class="material-icons">filter_1</i></a></li>
+                        <li><a class="btn-floating cyan waves-effect waves-light" id="power-setTwoDice-2"><i class="material-icons">filter_2</i></a></li>
+                        <li><a class="btn-floating cyan waves-effect waves-light" id="power-setTwoDice-3"><i class="material-icons">filter_3</i></a></li>
+                        <li><a class="btn-floating cyan waves-effect waves-light" id="power-setTwoDice-4"><i class="material-icons">filter_4</i></a></li>
+                        <li><a class="btn-floating cyan waves-effect waves-light" id="power-setTwoDice-5"><i class="material-icons">filter_5</i></a></li>
+                        <li><a class="btn-floating cyan waves-effect waves-light" id="power-setTwoDice-6"><i class="material-icons">filter_6</i></a></li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="power-icon"><a class="btn-floating btn-large waves-effect waves-light pink accent-2 disabled" id="power-addOneDice"><i class="material-icons">plus_one</i></a></div>
+                  <div class="power-icon"><a class="btn-floating btn-large waves-effect waves-light purple accent-2 disabled" id="power-specialDice"><i class="material-icons">brightness_auto</i></a></div>
+                  <div class="power-icon"><a class="btn-floating btn-large waves-effect waves-light deep-orange accent-3 disabled" id="power-choseAttack"><i class="material-icons">filter_center_focus</i></a></div>
+                  <div class="power-icon"><a class="btn-floating btn-large waves-effect waves-light  yellow darken-4 disabled" id="power-randomAttack"><i class="material-icons">mood</i></a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-container z-depth-1">
+            <div class="chat-main">
+              <div class="chat-messages"></div>
+            </div>
+            <div class="chat-form-container">
+              <form id="chat-form">
+                <input id="msg" type="text" placeholder="Enter Message" required autocomplete="off"/>
+                <button class="btn">Send</button>
+              </form>
+            </div>
+            
+            <div class="start-container z-depth-1">
+              <div class="chat-main">
+                <div class="chat-info">
+                  <div class="room-info">
+                    <p>Room ID:</p>
+                    <p id="room-name"></p>
+                  </div>
+                  <div class="user-info">
+                    <p>Users:</p>
+                    <div id="users"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="dice-store red">
-        <div id="selected-dice"></div>
-        <div class="end-turn">
-          <button class="waves-effect waves-light btn red accent-3 disabled" id="btnEndTurn">
-            End Turn
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="chat-container z-depth-1">
-      <div class="chat-main">
-        <div class="chat-messages"></div>
-      </div>
-    </div>
-
-    <div class="chat-container z-depth-1">
-      <div class="chat-form-container">
-        <form id="chat-form">
-          <input id="msg" type="text" placeholder="Enter Message" required autocomplete="off"/>
-          <button class="btn">Send</button>
-        </form>
-      </div>
-    </div>
-
-    <div class="chat-container z-depth-1">
-      <div class="chat-main">
-        <div class="chat-info">
-          <div class="room-info">
-            <p>Room ID: </p>
-            <p id="room-name"></p>
-          </div>
-          <div class="user-info">
-            <p>Users: </p>
-            <div id="users"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="chat-container z-depth-1">
-      <button class="btn" id="btnStart">Start</button>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js" integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+
+    <script src="./js/three.min.js"></script>
+    <script src="./js/cannon.min.js"></script>
+    <script type="text/javascript" src="./js/teal.js"></script>
+    <script type="text/javascript" src="./js/dice.js"></script>
+    <script type="text/javascript" src="./js/main.js"></script>
+    
     <script src="./js/init.js"></script>
     <script src="./js/game.js"></script>
     <script src="./js/chat.js"></script>
+
+    <script type="text/javascript" defer="defer">
+      $('.chat-main .chat-messages').css("max-height", $('.chat-main .chat-messages')[0].clientHeight);
+
+      var elems = document.querySelectorAll('.fixed-action-btn');
+      var instances = M.FloatingActionButton.init(elems, {
+        direction: 'left',
+        hoverEnabled: false
+      });
+      
+      $('#modal-special-dice').modal();
+      $('#modal-chose-attack').modal();
+    </script>
   </body>
 </html>

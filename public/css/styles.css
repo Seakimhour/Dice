@@ -4,6 +4,39 @@
   padding: 0;
 }
 
+.main {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-wrap {
+  padding: 0 50px 30px 50px;
+  background-color: white;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.center {
+  margin: 20px auto;
+}
+
+.full-height {
+  min-height: 100vh !important;
+}
+
+canvas {
+  border-radius: 5px;
+}
+
+body {
+	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
+}
+
 .flex {
   display: flex !important;
 }
@@ -14,57 +47,59 @@
   width: 100%;
 }
 
-.game-top {
+.game {
   display: flex;
   flex-direction: row;
   flex: 1;
-  min-height: calc(100vh - 100px);
+  height: calc(100vh - 20px);
+  margin: 10px;
 }
 
-.dice-space {
-  flex: 2;
+/* Score Table */
+.score-table {
+  display: flex;
+  flex: 1;
+  margin: 10px;
+}
+
+.table {
+  flex: 1;
   display: flex;
   flex-direction: column;
+  background-color: white;
+  border-radius: 5px;
+  padding: 10px;
 }
 
-#dice-roll {
+.tr {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+}
+
+.th {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  width: 170px;
 }
 
-a img {
-  margin: 10px;
-}
-
-.roll {
-  flex-shrink: 1;
-  display: flex;
-  justify-content: center;
-  margin: 30px;
-}
-
-.score-table {
-  display: flex;
-  flex-direction: column;
+.td {
   flex: 1;
-}
-
-th {
-  text-align: center;
-  width: 100px;
-}
-
-td {
-  width: 100px;
+  /* min-width: 100px; */
 }
 
 .point {
   cursor: pointer;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 0;
   font-size: 2rem;
+  margin: 10px;
 }
 
 .total {
@@ -81,9 +116,20 @@ td {
   color: white;
 }
 
+/* Dice Space */
+.dice-space {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+}
+
 .dice-store {
   display: flex;
   height: 100px;
+
+  background-color: white;
+  border-radius: 5px;
+  margin: 10px;
 }
 
 #selected-dice {
@@ -99,37 +145,125 @@ td {
   align-items: center;
 }
 
-.center {
-  margin: 20px auto;
+#dice-roll {
+  flex: 2;
+  display: flex;
+  flex-direction: row;
 }
 
-.full-height {
-  min-height: 100vh !important;
+#canvas {
+  position: relative;
+  flex: 1;
+  margin: 10px;
 }
 
-.main {
+#btnStart {
+  cursor: pointer;
+  position: absolute;
+  top: 2%;
+  left: 2%;
+  width: 96%;
+  height: 96%;
+  border-radius: 5px;
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
   display: flex;
   justify-content: center;
-  min-height: 100vh;
+  align-items: center;
 }
 
-.form-wrap {
+#btnStart p {
+  font-size: 6rem;
+  color: white;
+}
+
+#dice-tool {
+  flex-shrink: 1;
+  margin: 10px;
+}
+
+.tool {
+  height: 100%;
   display: flex;
   flex-direction: column;
+  background-color: white;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.roll-button {
+  margin-bottom: 10px;
+}
+
+.power {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.power-icon {
+  flex: 1;
+  display: flex;
   justify-content: center;
+  align-items: center;
+}
+
+.power-icon > a > i {
+  font-size: 2rem !important;
+}
+
+.fixed-action-btn {
+  padding: 0 !important;
+  right: unset;
+  bottom: unset;
+  position: relative;
+}
+
+.tooltip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  width: 170px;
+  font-size: 1.2rem;
+}
+
+.tooltip i {
+  padding-left: 5px;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: fit-content;
+  /* height: 54px; */
+  text-align: center;
+  font-size: 4rem;
+  background-color: white;
+
+  /* Position the tooltip */
+  position: absolute;
+  top: -15px;
+  left: 100%;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }
 
 .chat-container {
-  max-width: 980px;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  margin: 30px auto;
+  margin: 10px;
   padding: 10px;
-  border-radius: 10px;
-
+  background-color: white;
+  border-radius: 5px;
 }
 
 .chat-main {
+  flex: 1;
   display: flex;
   flex-direction: row;
 }
@@ -139,15 +273,18 @@ td {
   flex-direction: column;
 }
 
-
 .room-info, .user-info {
   display: flex;
   flex-direction: row;
 }
 
 .chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0px;
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 #chat-form {
@@ -163,4 +300,20 @@ td {
 
 #room-name, #users {
   padding-left: 10px;
+}
+
+.start-container {
+  display: none;
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
 }

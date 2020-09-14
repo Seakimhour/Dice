@@ -21,7 +21,7 @@ const botName = "System";
 
 var rollableDice = 5;
 var rollAvailable = 3;
-var currentDice = [];
+var newRoll = [];
 var storeDice = [];
 var currentTurn = "";
 
@@ -59,25 +59,25 @@ io.on("connection", (socket) => {
     io.emit("playerPoint", users);
   });
 
-  // When click on dice
-  socket.on("selectDice", (data) => {
-    io.emit("selectDice", data);
+  // send click pos to all user
+  socket.on("selectPosition", data => {
+    io.emit("selectPosition", data);
   });
-
-  // remove dice and show it in storeDice
-  socket.on("showStoreDice", (data) => {
+  
+  // store dice
+  socket.on("selectDice", (data) => {
     if (data.player_id == socket.id) {
       rollableDice--;
-      storeDice.push(data.dice);
+      storeDice.push(data.dice_value);
     }
     io.emit("showStoreDice", storeDice);
   });
-
+    
   // Listen for Game Start
   socket.on("StartGame", (data) => {
     rollableDice = 5;
     rollAvailable = 3;
-    currentDice = [];
+    newRoll = [];
     storeDice = [];
     currentTurn = data.player.id;
     startOrigin = data.player.id;
@@ -90,22 +90,25 @@ io.on("connection", (socket) => {
 
   // Listen for Die Rolling
   socket.on("rollTheDice", (data) => {
-    currentDice = [];
+    const user = getCurrentUser(socket.id);
+    newRoll = [];
     let faceValue;
 
     for (i = 1; i <= rollableDice; i++) {
       faceValue = Math.floor(Math.random() * 6) + 1;
-      currentDice.push(faceValue);
+      newRoll.push(faceValue);
     }
 
-    data["allDice"] = [...storeDice, ...currentDice];
-    data["currentDice"] = currentDice;
+    data["player"] = user;
+    data["storeDice"] = storeDice;
+    data["newRoll"] = newRoll;
+    
     rollAvailable--;
     data["rollAvailable"] = rollAvailable;
     io.emit("rollTheDice", data);
   });
 
-  // Listen for Game Start
+  // Save Point and Update Cell
   socket.on("savePoint", (data) => {
     const user = getCurrentUser(socket.id);
     if (data.player_id == user.id) {
@@ -117,7 +120,7 @@ io.on("connection", (socket) => {
   // Reset
   socket.on("endTurn", () => {
     storeDice = [];
-    currentDice = [];
+    newRoll = [];
     rollableDice = 5;
     rollAvailable = 3;
 
@@ -142,6 +145,54 @@ io.on("connection", (socket) => {
       currentRound++;
       io.emit("SetRound", currentRound);
     }
+  });
+
+  // power
+  socket.on("powerUsed", (power) => {
+    const user = getCurrentUser(socket.id);
+
+    switch (power.type) {
+      case 'addOneDice': 
+        power["newValue"] = Math.floor(Math.random() * 6) + 1;
+      break;
+      case 'specialDice': 
+        power["newValue"] = Math.floor(Math.random() * 6) + 1;
+      break;
+    }
+
+    if (power.player_id == user.id && rollableDice == 5) {
+      user.power[power.type]--;
+      io.emit("powerUsed", power);
+    }
+  });
+  
+  // return user and undo rollAvailable
+  socket.on("powerHandler", (data) => {
+    const user = getCurrentUser(socket.id);
+    if (data.player_id == user.id) {
+      data['player'] = user;
+      rollAvailable++;
+      io.emit('powerHandler', data);
+    }
+  });
+
+  // Save Power Point
+  socket.on("powerPointHandler", (data) => {
+    let user = getCurrentUser(socket.id);
+    let users = getUsers();
+
+    if (data.para == 'specialDice') {
+      user['specialDice'] = data.point;
+    } else if (data.para == 'choseAttack') {
+      user = getCurrentUser(data.para);
+      user['minus'] += data.point;
+    } else if (data.para == 'randomAttack') {
+      users.forEach(u => {
+        u['minus'] += Math.floor(Math.random() * data.point) + 1;
+      });
+    }
+
+    io.emit("playerPoint", users);
   });
 
   // Listen for chatMessage
