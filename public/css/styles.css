@@ -75,6 +75,7 @@ body {
   flex: 1;
   display: flex;
   flex-direction: row;
+  border-bottom: 1px solid silver;
 }
 
 .th {
@@ -82,14 +83,13 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.5rem;
   font-weight: bold;
-  width: 170px;
 }
 
 .td {
   flex: 1;
-  /* min-width: 100px; */
+  display: flex;
+  align-items: center;
 }
 
 .point {
@@ -98,13 +98,14 @@ body {
   justify-content: center;
   align-items: center;
   padding: 0;
-  font-size: 2rem;
-  margin: 10px;
 }
 
 .total {
   padding: 0;
-  font-size: 2rem;
+}
+
+#hit {
+  color: red;
 }
 
 .point:hover {
@@ -115,6 +116,7 @@ body {
   background-color: #4caf50;
   color: white;
 }
+/* Score Table End*/
 
 /* Dice Space */
 .dice-space {
@@ -132,17 +134,15 @@ body {
   margin: 10px;
 }
 
+.button-endTurn {
+  margin: 32px;
+}
+
 #selected-dice {
   flex: 4;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.end-turn {
-  padding: 0 30px;
-  display: flex;
-  align-items: center;
 }
 
 #dice-roll {
@@ -174,7 +174,8 @@ body {
 }
 
 #btnStart p {
-  font-size: 6rem;
+  font-size: 2rem;
+  font-weight: bold;
   color: white;
 }
 
@@ -192,8 +193,12 @@ body {
   padding: 10px;
 }
 
-.roll-button {
+.button-wrap {
   margin-bottom: 10px;
+}
+
+.button-wrap button {
+  width: 100%;
 }
 
 .power {
@@ -218,38 +223,6 @@ body {
   right: unset;
   bottom: unset;
   position: relative;
-}
-
-.tooltip {
-  position: relative;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  width: 170px;
-  font-size: 1.2rem;
-}
-
-.tooltip i {
-  padding-left: 5px;
-}
-
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: fit-content;
-  /* height: 54px; */
-  text-align: center;
-  font-size: 4rem;
-  background-color: white;
-
-  /* Position the tooltip */
-  position: absolute;
-  top: -15px;
-  left: 100%;
-  z-index: 1;
-}
-
-.tooltip:hover .tooltiptext {
-  visibility: visible;
 }
 
 .chat-container {
@@ -316,4 +289,17 @@ body {
 	100% {
 		background-position: 0% 50%;
 	}
+}
+
+@media screen and (max-width: 1000px) {
+  .chat-container {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .game {
+    flex-direction: column;
+    height: auto;
+  }
 }

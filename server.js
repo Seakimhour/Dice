@@ -28,6 +28,10 @@ var currentTurn = "";
 var currentRound = 1;
 var startOrigin = "";
 
+// bug 
+// 1. player cannot use the same name
+
+
 // Run when client connects
 io.on("connection", (socket) => {
   socket.on("joinRoom", ({ username, room }) => {
@@ -178,21 +182,25 @@ io.on("connection", (socket) => {
 
   // Save Power Point
   socket.on("powerPointHandler", (data) => {
-    let user = getCurrentUser(socket.id);
-    let users = getUsers();
 
     if (data.para == 'specialDice') {
+      let user = getCurrentUser(socket.id);
       user['specialDice'] = data.point;
-    } else if (data.para == 'choseAttack') {
-      user = getCurrentUser(data.para);
-      user['minus'] += data.point;
     } else if (data.para == 'randomAttack') {
+      let users = getUsers();
       users.forEach(u => {
-        u['minus'] += Math.floor(Math.random() * data.point) + 1;
+        let minus = Math.floor(Math.random() * data.point) + 1;
+        u['minus'] += minus;
+        io.emit("displayDamage", {player_id:u.id, damage:minus});
       });
+    } else {
+      // for choseAttack where para is user id
+      let user = getCurrentUser(data.para);
+      user['minus'] += data.point;
+      io.emit("displayDamage", {player_id:user.id, damage:data.point});
     }
 
-    io.emit("playerPoint", users);
+    io.emit("playerPoint", getUsers());
   });
 
   // Listen for chatMessage

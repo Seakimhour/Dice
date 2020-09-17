@@ -6,8 +6,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
     <link rel="stylesheet" href="./css/styles.css"/>
-    <link rel="stylesheet" href="./css/main.css"/>
-    <link rel="stylesheet" href="./css/dice.css"/>
     <title>We roll!</title>
   </head>
   <body>
@@ -40,60 +38,60 @@
               <div class="th" id="round">Round 1/12</div>
             </div>
             <div class="tr" id="aces">
-              <div class="td tooltip">Aces <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2680&#x2680&#x2680&#x2680&#x2680</span></div>
+              <div class="td">Aces</div>
             </div>
             <div class="tr" id="twos">
-              <div class="td tooltip">Twos <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2681&#x2681&#x2681&#x2681&#x2681</span></div>
+              <div class="td">Twos</div>
             </div>
             <div class="tr" id="threes">
-              <div class="td tooltip">Threes <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2682&#x2682&#x2682&#x2682&#x2682</span></div>
+              <div class="td">Threes</div>
             </div>
             <div class="tr" id="fours">
-              <div class="td tooltip">Fours <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2683&#x2683&#x2683&#x2683&#x2683</span></div>
+              <div class="td">Fours</div>
             </div>
             <div class="tr" id="fives">
-              <div class="td tooltip">Fives <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2684&#x2684&#x2684&#x2684&#x2684</span></div>
+              <div class="td">Fives</div>
             </div>
             <div class="tr" id="sixes">
-              <div class="td tooltip">Sixes <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2685&#x2685&#x2685&#x2685&#x2685</span></div>
+              <div class="td">Sixes</div>
             </div>
             <div class="tr" id="lower_section">
               <div class="th">Lower Section</div>
             </div>
             <div class="tr" id="three_of_a_kind">
-              <div class="td tooltip">Three Of A Kind <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2685&#x2685&#x2685</span></div>
+              <div class="td">Three Of A Kind</div>
             </div>
             <div class="tr" id="four_of_a_kind">
-              <div class="td tooltip">Four Of A Kind <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2685&#x2685&#x2685&#x2685</span></div>
+              <div class="td">Four Of A Kind</div>
             </div>
             <div class="tr" id="full_house">
-              <div class="td tooltip">Full House <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2685&#x2685&#x2685&#x2684&#x2684</span></div>
+              <div class="td">Full House</div>
             </div>
             <div class="tr" id="small_straight">
-              <div class="td tooltip">Small Straight <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2682&#x2683&#x2684&#x2685&#x2680</span></div>
+              <div class="td">Small Straight</div>
             </div>
             <div class="tr" id="large_straight">
-              <div class="td tooltip">Large Straight <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2681&#x2682&#x2683&#x2684&#x2685</span></div>
+              <div class="td">Large Straight</div>
             </div>
             <div class="tr" id="yahtzee">
-              <div class="td tooltip">Yahtzee <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2680&#x2680&#x2680&#x2680&#x2680</span></div>
+              <div class="td">Yahtzee</div>
             </div>
             <div class="tr" id="chance">
-              <div class="td tooltip">Chance <i class="material-icons">info_outline</i><span class="tooltiptext">&#x2683&#x2685&#x2685&#x2680&#x2681</span></div>
+              <div class="td">Chance</div>
             </div>
             <div class="tr" class="total">
+              <div class="td"></div>
+            </div>
+            <div class="tr" id="hit">
               <div class="td"></div>
             </div>
           </div>
         </div>
         <div class="dice-space">
-
           <div class="dice-store z-depth-1">
             <div id="selected-dice"></div>
-            <div class="end-turn">
-              <button class="waves-effect waves-light btn red accent-3 disabled" id="btnEndTurn">
-                End Turn
-              </button>
+            <div class="button-endTurn">
+              <button class="waves-effect waves-light btn red accent-3 disabled" id="btnEndTurn">End</button>
             </div>
           </div>
 
@@ -105,7 +103,7 @@
             </div>
             <div id="dice-tool">
               <div class="tool">
-                <div class="roll-button">
+                <div class="button-wrap">
                   <button class="waves-effect waves-light btn blue accent-3 disabled" id="btnRoll">ROLL(3)</button>
                 </div>
                 <div class="power">
@@ -143,7 +141,6 @@
                 <button class="btn">Send</button>
               </form>
             </div>
-            
             <div class="start-container z-depth-1">
               <div class="chat-main">
                 <div class="chat-info">
@@ -172,7 +169,6 @@
     <script src="./js/cannon.min.js"></script>
     <script type="text/javascript" src="./js/teal.js"></script>
     <script type="text/javascript" src="./js/dice.js"></script>
-    <script type="text/javascript" src="./js/main.js"></script>
     
     <script src="./js/init.js"></script>
     <script src="./js/game.js"></script>

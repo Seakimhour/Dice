@@ -41,8 +41,7 @@ function savePoint(el, player) {
 }
 
 socket.on('savePoint', data => {
-  let el = document.getElementById(data.type);
-  el = el.querySelector("#" + data.player_id);
+  let el = document.getElementById(data.type).children[data.player_id];
   el.className += " z-depth-1 completed";
 });
 
@@ -72,7 +71,6 @@ socket.on('playerPoint', (players) => {
 });
 
 socket.on('StartGame', data => {
-
   // generate point cell base on number player
   clickableCell(data.players);
   
@@ -86,7 +84,7 @@ function clickableCell(players) {
   let player = getPlayer();
 
   for (let p = 0; p < players.length; p++) {
-    for (let i = 0; i < 16; i++) {
+    for (let i = 0; i < 17; i++) {
       let tr = document.getElementsByClassName("tr")[i];
       if (i == 0) {
         let div = document.createElement("div");
@@ -103,10 +101,16 @@ function clickableCell(players) {
         div.className = `th ${players[p].id} total`;
         div.innerHTML = 0;
         tr.appendChild(div);
+      } else if (i == 16) {
+        let div = document.createElement("div");
+        div.className = `th ${players[p].id}`;
+        div.id = players[p].id;
+        div.innerHTML = "";
+        tr.appendChild(div);
       } else {
         let div = document.createElement("div");
-        div.id = players[p].id;
         div.className = "td point";
+        div.id = players[p].id;
 
         if (players[p].id == player.id) {
           div.addEventListener("click", () => savePoint(div, player), false);
@@ -280,4 +284,10 @@ socket.on('powerHandler', (data) => {
     clearCell();
     box.clear();
   }, 3000);
+});
+
+socket.on('displayDamage', data => {
+  console.log(data.damage);
+  let el = document.getElementById('hit').children[data.player_id];
+  el.innerHTML = `-${data.damage}`;
 });

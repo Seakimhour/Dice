@@ -194,6 +194,7 @@ function runThrow(newRoll, player_id, rollAvailable) {
 }
 
 function powerPointHandler(para) {
+  
   socket.emit('powerPointHandler', {para:para, point:sumAll(result_value)});
   
   $('#modal-special-dice').modal('close');
