@@ -73,7 +73,6 @@ btnEndTurn.addEventListener("click", () => socket.emit('endTurn', player));
 // decide result before roll
 function before_roll(vectors, notation, callback) {
   // enter the wanted result, example: callback([2, 2, 2, 2]);
-  console.log('before_roll: ' + result_value);
   callback(result_value);
 }
 
@@ -84,7 +83,6 @@ function notation_getter() {
 
 // Get result after roll
 function after_roll(notation, result) {
-  console.log('after_roll:  ' + result);
   pointCalculation([...result, ...storeDice], player_turn_id);
 }
 

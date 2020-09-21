@@ -30,7 +30,9 @@ var startOrigin = "";
 
 // bug 
 // 1. player cannot use the same name
-
+// 2. fix point calculation full house, large straight (Fixed)
+// 3. on small screen select dice bug (maybe uuid line:708, body undifined line:710)
+// 4. Randomly Dice not roll for oneplayer.
 
 // Run when client connects
 io.on("connection", (socket) => {
@@ -43,12 +45,10 @@ io.on("connection", (socket) => {
     socket.emit("message", formatMessage(botName, "Welcome to Waiting Room!"));
 
     // Broadcast when a user connects
-    socket.broadcast
-      .to(user.room)
-      .emit(
-        "message",
-        formatMessage(botName, `${user.name} has joined the chat`)
-      );
+    socket.broadcast.to(user.room).emit(
+      "message",
+      formatMessage(botName, `${user.name} has joined the chat`)
+    );
 
     // Send users and room info
     io.to(user.room).emit("roomUsers", {
@@ -87,7 +87,6 @@ io.on("connection", (socket) => {
     startOrigin = data.player.id;
     currentRound = 1;
 
-    console.log("currentTurn : " + currentTurn);
     io.emit("StartGame", data);
     io.emit("SetRound", currentRound);
   });
@@ -109,6 +108,7 @@ io.on("connection", (socket) => {
     
     rollAvailable--;
     data["rollAvailable"] = rollAvailable;
+
     io.emit("rollTheDice", data);
   });
 
@@ -186,18 +186,19 @@ io.on("connection", (socket) => {
     if (data.para == 'specialDice') {
       let user = getCurrentUser(socket.id);
       user['specialDice'] = data.point;
+      io.emit("displayChange", {player_id:user.id, change:data.point, type:'green'});
     } else if (data.para == 'randomAttack') {
       let users = getUsers();
       users.forEach(u => {
-        let minus = Math.floor(Math.random() * data.point) + 1;
-        u['minus'] += minus;
-        io.emit("displayDamage", {player_id:u.id, damage:minus});
+        let change = Math.floor(Math.random() * data.point) + 1;
+        u['minus'] += change;
+        io.emit("displayChange", {player_id:u.id, change:change, type:'red'});
       });
     } else {
       // for choseAttack where para is user id
       let user = getCurrentUser(data.para);
       user['minus'] += data.point;
-      io.emit("displayDamage", {player_id:user.id, damage:data.point});
+      io.emit("displayChange", {player_id:user.id, change:data.point, type:'red'});
     }
 
     io.emit("playerPoint", getUsers());
@@ -229,5 +230,4 @@ io.on("connection", (socket) => {
 });
 
 const PORT = process.env.PORT || 3000;
-
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

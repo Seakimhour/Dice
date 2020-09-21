@@ -92,6 +92,10 @@ body {
   align-items: center;
 }
 
+.player-name {
+  border-radius: 5px;
+}
+
 .point {
   cursor: pointer;
   display: flex;
@@ -102,10 +106,6 @@ body {
 
 .total {
   padding: 0;
-}
-
-#hit {
-  color: red;
 }
 
 .point:hover {

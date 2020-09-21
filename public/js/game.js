@@ -89,7 +89,7 @@ function clickableCell(players) {
       if (i == 0) {
         let div = document.createElement("div");
         div.id = `player-${players[p].name}`;
-        div.className = 'th';
+        div.className = 'th player-name';
         div.innerHTML = players[p].name;
         tr.appendChild(div);
       } else if (i == 7) {
@@ -138,8 +138,13 @@ function clickableCell(players) {
 
 function turn(nextPlayer) {
   player_turn_id = nextPlayer.id;
-
+  
   let player = getPlayer();
+
+  let playerCell = document.getElementById('player-' + player.name);
+  
+  playerCell.classList.remove('z-depth-1');
+  playerCell.classList.remove('blue');
 
   my_turn = false;
   if (!btnRoll.classList.contains('disabled')) btnRoll.className += ' disabled';
@@ -155,6 +160,7 @@ function turn(nextPlayer) {
     my_turn = true;
     btnRoll.classList.remove('disabled');
     btnEndTurn.classList.remove('disabled');
+    playerCell.className += ' z-depth-1 blue';
   }
 
   if (nextPlayer.power.setTwoDice > 0) setTwoDice.classList.remove('disabled');
@@ -226,22 +232,32 @@ function pointCalculation(result, player_turn_id) {
   let zeroCount = pointArray.filter((e) => e == 0).length;
   let maxN = Math.max(...pointArray);
 
-  if (zeroCount == 1 && maxN == 1) {
-    if (connect(pointArray) > 3) roll_point.small_straight.innerHTML = 30;
-    if (connect(pointArray) > 4) roll_point.large_straight.innerHTML = 40;
+  let connectLength = connect(pointArray);
+  console.log(connectLength);
+
+  if (connectLength > 3) roll_point.small_straight = 30;
+  if (connectLength > 4) {
+    roll_point.small_straight = 30;
+    roll_point.large_straight = 40;
   }
-  if (zeroCount == 2 && maxN == 2 && connect(pointArray) > 3) roll_point.small_straight = 30;
-  if (zeroCount == 3 && maxN == 3) roll_point.three_of_a_kind = sumAll(result);
-  if (zeroCount == 4 && maxN == 3) roll_point.full_house = 25;
-  if (zeroCount == 4 && maxN == 4) roll_point.four_of_a_kind = sumAll(result);
-  if (zeroCount == 5 && maxN == 5) roll_point.yahtzee = 50;
+
+  if (maxN == 3) roll_point.three_of_a_kind = sumAll(result);
+  if (maxN == 4) {
+    roll_point.four_of_a_kind = sumAll(result);
+    roll_point.three_of_a_kind = sumAll(result);
+  }
+
+  if (maxN == 5) roll_point.yahtzee = 50;
+
   roll_point.chance = sumAll(result);
+
+  if (zeroCount == 4 && maxN == 3) roll_point.full_house = 25;
   
   for (const property in roll_point) {
     let cell = document.getElementById(property).children[player_turn_id];
     if (!cell.classList.contains("completed") && roll_point[property] > 0) cell.innerHTML = roll_point[property];
   }
-} 
+}
 
 function connect(pointArray) {
   let count = 0;
@@ -272,11 +288,10 @@ socket.on('powerHandler', (data) => {
   setTimeout(() => {
     if (player.id == data.player.id) {
       if (data.type == 'specialDice') {
-        $('#modal-special-dice').modal('open');
+        powerPointHandler(data.type);
       } else if (data.type == 'choseAttack') {
         $('#modal-chose-attack').modal('open');
       } else if (data.type == 'randomAttack') {
-        console.log('here');
         powerPointHandler(data.type);
       }
     }
@@ -286,8 +301,13 @@ socket.on('powerHandler', (data) => {
   }, 3000);
 });
 
-socket.on('displayDamage', data => {
-  console.log(data.damage);
-  let el = document.getElementById('hit').children[data.player_id];
-  el.innerHTML = `-${data.damage}`;
+socket.on('displayChange', data => {
+  let el = document.getElementById('change').children[data.player_id];
+  if (data.type == 'green') {
+    el.style.color = 'green';
+    el.innerHTML = `+${data.change}`;
+  } else {
+    el.style.color = 'red';
+    el.innerHTML = `-${data.change}`;
+  }
 });
